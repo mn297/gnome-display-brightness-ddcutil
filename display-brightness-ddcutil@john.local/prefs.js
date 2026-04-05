@@ -29,6 +29,14 @@ const PrefsWidget = GObject.registerClass({
         'allow_zero_brightness_row',
         'disable_display_state_check_row',
         'verbose_debugging_row',
+        'increase_monitor_0_shortcut_button',
+        'decrease_monitor_0_shortcut_button',
+        'increase_monitor_1_shortcut_button',
+        'decrease_monitor_1_shortcut_button',
+        'increase_monitor_2_shortcut_button',
+        'decrease_monitor_2_shortcut_button',
+        'increase_monitor_3_shortcut_button',
+        'decrease_monitor_3_shortcut_button',
     ],
 }, class PrefsWidget extends Adw.PreferencesPage {
     _init(settings, params = {}) {
@@ -133,6 +141,29 @@ const PrefsWidget = GObject.registerClass({
         this.settings.connect('changed::hide-system-indicator', () => {
             this._position_system_indicator_row.sensitive = !this.settings.get_boolean('hide-system-indicator');
         });
+
+        for (let i = 0; i < 4; i++) {
+            const incKey = `increase-brightness-monitor-${i}-shortcut`;
+            const decKey = `decrease-brightness-monitor-${i}-shortcut`;
+            const incBtn = this[`_increase_monitor_${i}_shortcut_button`];
+            const decBtn = this[`_decrease_monitor_${i}_shortcut_button`];
+
+            this.settings.connect(`changed::${incKey}`, () => {
+                incBtn.keybinding = this.settings.get_strv(incKey)[0];
+            });
+            incBtn.connect('notify::keybinding', () => {
+                this.settings.set_strv(incKey, [incBtn.keybinding]);
+            });
+            incBtn.keybinding = this.settings.get_strv(incKey)[0];
+
+            this.settings.connect(`changed::${decKey}`, () => {
+                decBtn.keybinding = this.settings.get_strv(decKey)[0];
+            });
+            decBtn.connect('notify::keybinding', () => {
+                this.settings.set_strv(decKey, [decBtn.keybinding]);
+            });
+            decBtn.keybinding = this.settings.get_strv(decKey)[0];
+        }
     }
 
     onButtonLocationChanged() {

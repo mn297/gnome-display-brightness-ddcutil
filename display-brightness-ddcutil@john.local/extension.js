@@ -548,7 +548,9 @@ export default class DDCUtilBrightnessControlExtension extends Extension {
     connectSettingsSignals() {
         oldSettings = this.settings;
         settingsSignals = {
-            change: this.settings.connect('changed', () => {
+            change: this.settings.connect('changed', (settings, key) => {
+                if (key.includes('-brightness-monitor-'))
+                    return;
                 this.onSettingsChange();
             }),
             reload: this.settings.connect('changed::reload', () => {
@@ -614,6 +616,30 @@ export default class DDCUtilBrightnessControlExtension extends Extension {
         mainMenuButton.emit('value-down');
     }
 
+    increaseMonitor(index) {
+        if (displays && displays[index] && displays[index].slider) {
+            brightnessLog(this.settings, `Increase brightness monitor ${index}`);
+            const step = 0.10;
+            const slider = displays[index].slider;
+            slider.setShowOSD();
+            const next = Math.min(slider.ValueSlider.value + step, 1);
+            slider.ValueSlider.value = next;
+            slider.setHideOSD();
+        }
+    }
+
+    decreaseMonitor(index) {
+        if (displays && displays[index] && displays[index].slider) {
+            brightnessLog(this.settings, `Decrease brightness monitor ${index}`);
+            const step = 0.10;
+            const slider = displays[index].slider;
+            slider.setShowOSD();
+            const next = Math.max(0, slider.ValueSlider.value - step);
+            slider.ValueSlider.value = next;
+            slider.setHideOSD();
+        }
+    }
+
     addKeyboardShortcuts() {
         brightnessLog(this.settings, 'Add keyboard shortcuts');
         Main.wm.addKeybinding(
@@ -630,11 +656,42 @@ export default class DDCUtilBrightnessControlExtension extends Extension {
             Shell.ActionMode.ALL,
             this.decrease.bind(this)
         );
+        this._perMonitorBindings = [];
+        for (let i = 0; i < 4; i++) {
+            const incKey = `increase-brightness-monitor-${i}-shortcut`;
+            const decKey = `decrease-brightness-monitor-${i}-shortcut`;
+            const incAccel = this.settings.get_strv(incKey);
+            if (incAccel.length > 0 && incAccel[0] !== '') {
+                Main.wm.addKeybinding(
+                    incKey, this.settings,
+                    Meta.KeyBindingFlags.NONE,
+                    Shell.ActionMode.ALL,
+                    this.increaseMonitor.bind(this, i)
+                );
+                this._perMonitorBindings.push(incKey);
+            }
+            const decAccel = this.settings.get_strv(decKey);
+            if (decAccel.length > 0 && decAccel[0] !== '') {
+                Main.wm.addKeybinding(
+                    decKey, this.settings,
+                    Meta.KeyBindingFlags.NONE,
+                    Shell.ActionMode.ALL,
+                    this.decreaseMonitor.bind(this, i)
+                );
+                this._perMonitorBindings.push(decKey);
+            }
+        }
     }
 
     removeKeyboardShortcuts() {
         brightnessLog(this.settings, 'Remove keyboard shortcuts');
         Main.wm.removeKeybinding('increase-brightness-shortcut');
         Main.wm.removeKeybinding('decrease-brightness-shortcut');
+        if (this._perMonitorBindings) {
+            this._perMonitorBindings.forEach(key => {
+                Main.wm.removeKeybinding(key);
+            });
+            this._perMonitorBindings = [];
+        }
     }
 }

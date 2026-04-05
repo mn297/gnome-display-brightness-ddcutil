@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="display-brightness-ddcutil">
-  <schema id="org.gnome.shell.extensions.display-brightness-ddcutil"
-    path="/org/gnome/shell/extensions/display-brightness-ddcutil/">
+  <schema id="org.gnome.shell.extensions.display-brightness-ddcutil-dev"
+    path="/org/gnome/shell/extensions/display-brightness-ddcutil-dev/">
     <key type="b" name="show-all-slider">
       <default>false</default>
       <summary>Enables the All Slider</summary>
@@ -83,6 +83,38 @@
     <key type="b" name="verbose-debugging">
       <default>false</default>
       <summary>Verbose debugging</summary>
+    </key>
+    <key type="as" name="increase-brightness-monitor-0-shortcut">
+      <default><![CDATA[['']]]></default>
+      <summary>Increase Brightness Monitor 1 Shortcut</summary>
+    </key>
+    <key type="as" name="decrease-brightness-monitor-0-shortcut">
+      <default><![CDATA[['']]]></default>
+      <summary>Decrease Brightness Monitor 1 Shortcut</summary>
+    </key>
+    <key type="as" name="increase-brightness-monitor-1-shortcut">
+      <default><![CDATA[['']]]></default>
+      <summary>Increase Brightness Monitor 2 Shortcut</summary>
+    </key>
+    <key type="as" name="decrease-brightness-monitor-1-shortcut">
+      <default><![CDATA[['']]]></default>
+      <summary>Decrease Brightness Monitor 2 Shortcut</summary>
+    </key>
+    <key type="as" name="increase-brightness-monitor-2-shortcut">
+      <default><![CDATA[['']]]></default>
+      <summary>Increase Brightness Monitor 3 Shortcut</summary>
+    </key>
+    <key type="as" name="decrease-brightness-monitor-2-shortcut">
+      <default><![CDATA[['']]]></default>
+      <summary>Decrease Brightness Monitor 3 Shortcut</summary>
+    </key>
+    <key type="as" name="increase-brightness-monitor-3-shortcut">
+      <default><![CDATA[['']]]></default>
+      <summary>Increase Brightness Monitor 4 Shortcut</summary>
+    </key>
+    <key type="as" name="decrease-brightness-monitor-3-shortcut">
+      <default><![CDATA[['']]]></default>
+      <summary>Decrease Brightness Monitor 4 Shortcut</summary>
     </key>
   </schema>
 </schemalist>
